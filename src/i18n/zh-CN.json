@@ -1,0 +1,43 @@
+{
+  "app": {
+    "name": "福韵图库"
+  },
+  "tabs": {
+    "wallpaper": "壁纸",
+    "avatar": "头像",
+    "emoji": "表情包",
+    "mine": "我的"
+  },
+  "categories": {
+    "hot": "热门推荐",
+    "latest": "最新上传",
+    "popular": "人气精选"
+  },
+  "actions": {
+    "viewAll": "查看全部",
+    "download": "下载",
+    "save": "保存",
+    "share": "分享",
+    "like": "收藏",
+    "liked": "已收藏",
+    "agree": "同意并继续",
+    "disagree": "不同意"
+  },
+  "messages": {
+    "noContent": "暂无内容~",
+    "noFavorites": "暂无收藏~",
+    "downloadStart": "开始下载...",
+    "downloadSuccess": "下载成功",
+    "downloadFail": "下载失败",
+    "saveSuccess": "保存成功",
+    "saveFail": "保存失败",
+    "addedToFavorites": "已添加到收藏",
+    "removedFromFavorites": "已取消收藏"
+  },
+  "privacy": {
+    "title": "用户协议及隐私政策",
+    "userAgreement": "用户协议",
+    "privacyPolicy": "隐私政策",
+    "welcome": "尊敬的用户：欢迎使用【福韵图库】"
+  }
+}

@@ -1,0 +1,78 @@
+<import name="privacy-modal" src="./PrivacyModal.ux"></import>
+
+<template>
+  <div class="splash-container">
+    <image class="logo" src="/assets/img/logo-3.png"></image>
+
+    <privacy-modal
+      show="{{showPrivacy}}"
+      onagree-evt="handleAgree"
+    ></privacy-modal>
+  </div>
+</template>
+
+<script>
+import router from '@system.router'
+import storage from '@system.storage'
+
+export default {
+  data() {
+    return {
+      showPrivacy: false
+    }
+  },
+  onInit() {
+    // 检查是否已同意协议
+    storage.get({
+      key: 'agreed_privacy',
+      success: data => {
+        if (data === 'true') {
+          // 已同意，缩短延迟避免闪烁
+          setTimeout(() => {
+            this.goHome()
+          }, 800)
+        } else {
+          // 未同意，显示模态框
+          this.showPrivacy = true
+        }
+      },
+      fail: () => {
+        this.showPrivacy = true
+      }
+    })
+  },
+  handleAgree() {
+    this.showPrivacy = false
+    // 保存同意状态
+    storage.set({
+      key: 'agreed_privacy',
+      value: 'true'
+    })
+    this.goHome()
+  },
+  goHome() {
+    router.replace({
+      uri: '/pages/Home'
+    })
+  }
+}
+</script>
+
+<style>
+  .splash-container {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    background-image: url('/assets/img/shangdianbg.png');
+    background-size: cover;
+    background-position: center;
+  }
+
+  .logo {
+    width: 46px;
+    height: 46px;
+    object-fit: contain;
+  }
+</style>

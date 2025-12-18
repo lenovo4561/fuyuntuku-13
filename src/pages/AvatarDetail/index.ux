@@ -1,0 +1,164 @@
+<template>
+  <div class="page-container">
+    <!-- Blurred Background -->
+    <stack class="stack-container">
+      <image class="bg-image" src="{{imgUrl}}" style="filter: blur(20px);"></image>
+      <div class="mask"></div>
+      
+      <div class="content">
+        <!-- Back Button -->
+        <div class="header">
+          <div class="back-btn" onclick="goBack">
+            <image class="back-icon" src="/assets/img/back.png"></image>
+          </div>
+        </div>
+
+        <!-- Main Image Area -->
+        <div class="image-area">
+          <image class="main-image" src="{{imgUrl}}"></image>
+        </div>
+
+        <!-- Bottom Area -->
+        <div class="bottom-area">
+          <div class="download-btn" onclick="downloadImage">
+            <text class="download-text">下载图片</text>
+          </div>
+          <div class="like-btn" onclick="toggleLike">
+            <image class="like-icon" src="{{isLiked ? '/assets/img/shoucang-s.png' : '/assets/img/shoucnag.png'}}"></image>
+          </div>
+        </div>
+      </div>
+    </stack>
+  </div>
+</template>
+
+<script>
+  import router from '@system.router'
+  import prompt from '@system.prompt'
+
+  export default {
+    protected: {
+      imgUrl: '', // Passed from previous page
+      isLiked: false
+    },
+    onInit() {
+      // If no image passed, use a placeholder or default
+      if (!this.imgUrl) {
+        this.imgUrl = '/assets/img/logo-3.png'; 
+      }
+    },
+    goBack() {
+      router.back()
+    },
+    downloadImage() {
+      prompt.showToast({
+        message: '开始下载...'
+      })
+      // Implement download logic here
+    },
+    toggleLike() {
+      this.isLiked = !this.isLiked;
+      prompt.showToast({
+        message: this.isLiked ? '已收藏' : '取消收藏'
+      })
+    }
+  }
+</script>
+
+<style>
+  .page-container {
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    background-color: #000000;
+  }
+  .stack-container {
+    width: 100%;
+    height: 100%;
+  }
+  .bg-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.6;
+  }
+  .mask {
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+  }
+  .content {
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .header {
+    width: 100%;
+    height: 80px; /* Adjust based on status bar */
+    padding-top: 30px;
+    padding-left: 20px;
+    justify-content: flex-start;
+    align-items: center;
+  }
+  .back-btn {
+    width: 40px;
+    height: 40px;
+    justify-content: center;
+    align-items: center;
+    background-color: #ffffff;
+    border-radius: 20px;
+  }
+  .back-icon {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+  }
+  .image-area {
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+  }
+  .main-image {
+    width: 100%;
+    height: 100%; /* Or fixed aspect ratio */
+    object-fit: contain;
+    border-radius: 10px;
+  }
+  .bottom-area {
+    width: 100%;
+    height: 100px;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 30px 30px 30px;
+  }
+  .download-btn {
+    flex: 1;
+    height: 50px;
+    background-color: #4cd964; /* Green color from screenshot */
+    border-radius: 25px;
+    justify-content: center;
+    align-items: center;
+    margin-right: 20px;
+  }
+  .download-text {
+    color: #000000;
+    font-size: 13px;
+    font-weight: bold;
+  }
+  .like-btn {
+    width: 50px;
+    height: 50px;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 25px;
+    justify-content: center;
+    align-items: center;
+  }
+  .like-icon {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+  }
+</style>

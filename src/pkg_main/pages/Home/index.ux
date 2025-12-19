@@ -1,0 +1,112 @@
+<import name="wallpaper-tab" src="../Wallpaper/index.ux"></import>
+<import name="avatar-tab" src="../Avatar/index.ux"></import>
+<import name="emoji-tab" src="../Emoji/index.ux"></import>
+<import name="mine-tab" src="../Mine/index.ux"></import>
+
+<template>
+  <div class="wrapper">
+    <image class="bg" src="/assets/img/shangdianbg.png"></image>
+    <!-- 内容区域 -->
+    <div class="content-area">
+      <wallpaper-tab class="tab-content" show="{{currentTab === 0}}"></wallpaper-tab>
+      <avatar-tab class="tab-content" show="{{currentTab === 1}}"></avatar-tab>
+      <emoji-tab class="tab-content" show="{{currentTab === 2}}"></emoji-tab>
+      <mine-tab class="tab-content" show="{{currentTab === 3}}"></mine-tab>
+    </div>
+
+    <!-- 底部导航栏 -->
+    <div class="tab-bar">
+      <div class="tab-item {{currentTab === 0 ? 'tab-item-active' : ''}}" onclick="switchTab(0)">
+        <image class="tab-icon" src="{{currentTab === 0 ? '/assets/img/bizhi-s.png' : '/assets/img/bizhi-u.png'}}"></image>
+      </div>
+      <div class="tab-item {{currentTab === 1 ? 'tab-item-active' : ''}}" onclick="switchTab(1)">
+        <image class="tab-icon" src="{{currentTab === 1 ? '/assets/img/touxiang-s.png' : '/assets/img/touxiang-u.png'}}"></image>
+      </div>
+      <div class="tab-item {{currentTab === 2 ? 'tab-item-active' : ''}}" onclick="switchTab(2)">
+        <image class="tab-icon" src="{{currentTab === 2 ? '/assets/img/biaoqingbao-s.png' : '/assets/img/biaoqingbao-u.png'}}"></image>
+      </div>
+      <div class="tab-item {{currentTab === 3 ? 'tab-item-active' : ''}}" onclick="switchTab(3)">
+        <image class="tab-icon" src="{{currentTab === 3 ? '/assets/img/mine-s.png' : '/assets/img/mine-u.png'}}"></image>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import { initUser } from '../../helper/init'
+
+export default {
+  data: {
+    currentTab: 0
+  },
+  onInit() {
+    // 在首页进行用户初始化
+    initUser()
+  },
+  switchTab(index) {
+    this.currentTab = index
+  }
+}
+</script>
+
+<style>
+.wrapper {
+  flex: 1;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  background-color: #000000;
+}
+
+.bg {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.content-area {
+  flex: 1;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.tab-content {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.tab-bar {
+  position: fixed;
+  bottom: 15px;
+  left: 25px;
+  width: 200px;
+  height: 44px;
+  background-color: #ffffff;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  border-radius: 22px;
+}
+
+.tab-item {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.tab-icon {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+</style>

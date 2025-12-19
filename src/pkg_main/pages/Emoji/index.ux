@@ -1,0 +1,134 @@
+﻿<template>
+  <div class="content" show="{{show}}">
+    <list class="list-container">
+      <!-- Top Logo -->
+      <list-item type="header" class="header-item">
+        <image class="logo" src="/pkg_main/assets/img/logo.png"></image>
+      </list-item>
+
+      <!-- Collection Banner -->
+      <list-item type="banner" class="banner-item">
+        <image class="collection-banner" src="/pkg_main/assets/img/shoucnag.png" onclick="goToCollection"></image>
+      </list-item>
+
+      <!-- Emoji Grid List -->
+      <list-item type="grid-row" class="grid-item" for="{{(index, row) in listData}}">
+          <image class="grid-image" src="{{row.left.url}}" onclick="showImage(row.left.url)"></image>
+          <image class="grid-image" src="{{row.right.url}}" if="{{row.right}}" onclick="showImage(row.right.url)"></image>
+          <div class="grid-placeholder" if="{{!row.right}}"></div>
+      </list-item>
+      
+      <!-- Padding for bottom tab bar -->
+      <list-item type="footer" class="footer-item">
+      </list-item>
+    </list>
+  </div>
+</template>
+
+<script>
+import router from '@system.router'
+
+export default {
+  props: ['show'],
+  data() {
+    return {
+      listData: []
+    }
+  },
+  onInit() {
+    // 生成1-30的图片列表
+    const rows = []
+    for (let i = 1; i <= 30; i += 2) {
+      rows.push({
+        left: { url: `https://cdn.shijinzhuang.com/fytk/bqb/${i}.jpg`, id: i },
+        right: i + 1 <= 30 ? { url: `https://cdn.shijinzhuang.com/fytk/bqb/${i + 1}.jpg`, id: i + 1 } : null
+      })
+    }
+    this.listData = rows
+  },
+  showImage(url) {
+    // 跳转到详情页
+    router.push({
+      uri: '/pkg_main/pages/EmojiDetail',
+      params: {
+        imgUrl: url
+      }
+    })
+  },
+  goToCollection() {
+    router.push({
+      uri: '/pkg_main/pages/Collection',
+      params: {
+        tab: 2
+      }
+    })
+  }
+}
+</script>
+
+<style>
+.content {
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0);
+}
+
+.list-container {
+  flex: 1;
+  flex-direction: column;
+}
+
+.header-item {
+  flex-direction: row;
+  padding: 10px 16px;
+  align-items: center;
+}
+
+.logo {
+  height: 30px;
+  object-fit: contain;
+}
+
+.banner-item {
+  padding: 0 16px;
+  margin-bottom: 16px;
+}
+
+.collection-banner {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  border-radius: 16px;
+}
+
+.grid-item {
+  padding: 0 16px;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.grid-cell {
+  width: 48%;
+  aspect-ratio: 1;
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: #333333;
+}
+
+.grid-image {
+  width: 48%;
+  aspect-ratio: 1;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+.grid-placeholder {
+  width: 48%;
+}
+
+.footer-item {
+  height: 60px;
+}
+</style>

@@ -1,0 +1,268 @@
+﻿<template>
+  <div class="collection-page">
+    <image class="bg-image" src="/pkg_main/assets/img/shangdianbg.png"></image>
+    <!-- Header -->
+    <div class="header">
+      <div class="back-btn" onclick="goBack">
+        <image class="back-icon" src="/pkg_main/assets/img/back.png"></image>
+      </div>
+      <text class="title">收藏</text>
+      <div class="placeholder"></div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs-wrapper">
+      <div class="tabs-container">
+        <div class="tab-item" style="background-color: {{currentTab === 0 ? '#76ff03' : '#ffffff'}}" onclick="switchTab(0)">
+          <text class="tab-text">壁纸</text>
+        </div>
+        <div class="tab-item" style="background-color: {{currentTab === 1 ? '#76ff03' : '#ffffff'}}" onclick="switchTab(1)">
+          <text class="tab-text">头像</text>
+        </div>
+        <div class="tab-item" style="background-color: {{currentTab === 2 ? '#76ff03' : '#ffffff'}}" onclick="switchTab(2)">
+          <text class="tab-text">表情包</text>
+        </div>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+      <!-- Empty State -->
+      <div class="empty-state" if="{{!hasData}}">
+        <image class="empty-img" src="/pkg_main/assets/img/kong.png"></image>
+        <text class="empty-text">当前暂无收藏~</text>
+      </div>
+
+      <!-- Data List -->
+      <list class="data-list" if="{{hasData}}">
+        <list-item type="grid" class="grid-row" for="{{listRows}}">
+           <div class="grid-item {{currentTab === 0 ? 'grid-item-wallpaper' : ''}}" onclick="openDetail(listRows[$idx].left)">
+             <image class="item-img" src="{{listRows[$idx].left.url}}"></image>
+           </div>
+           <div class="grid-item {{currentTab === 0 ? 'grid-item-wallpaper' : ''}}" if="{{listRows[$idx].right}}" onclick="openDetail(listRows[$idx].right)">
+             <image class="item-img" src="{{listRows[$idx].right.url}}"></image>
+           </div>
+           <div class="grid-placeholder" if="{{!listRows[$idx].right}}"></div>
+        </list-item>
+      </list>
+    </div>
+  </div>
+</template>
+
+<script>
+import router from '@system.router'
+import storage from '@system.storage'
+
+export default {
+  protected: {
+    tab: 0
+  },
+  private: {
+    currentTab: 0,
+    hasData: false,
+    listData: [],
+    listRows: []
+  },
+  onInit() {
+    // 根据传入的tab参数设置默认选中的分类
+    if (this.tab !== undefined) {
+      this.currentTab = parseInt(this.tab)
+    }
+    this.loadCollectionData()
+  },
+  onShow() {
+    this.loadCollectionData()
+  },
+  goBack() {
+    router.back()
+  },
+  switchTab(index) {
+    this.currentTab = index
+    this.loadCollectionData()
+  },
+  loadCollectionData() {
+    const keys = ['collection_wallpaper', 'collection_avatar', 'collection_emoji']
+    const key = keys[this.currentTab]
+    
+    storage.get({
+      key: key,
+      success: (data) => {
+        const list = JSON.parse(data || '[]')
+        this.hasData = list.length > 0
+        
+        // 转换为两列布局
+        const rows = []
+        for (let i = 0; i < list.length; i += 2) {
+          rows.push({
+            left: list[i],
+            right: list[i + 1] || null
+          })
+        }
+        this.listRows = rows
+      },
+      fail: () => {
+        this.hasData = false
+        this.listRows = []
+      }
+    })
+  },
+  openDetail(item) {
+    if (!item) return
+    
+    const pages = [
+      '/pkg_main/pages/WallpaperDetail',
+      '/pkg_main/pages/AvatarDetail',
+      '/pkg_main/pages/EmojiDetail'
+    ]
+    
+    router.push({
+      uri: pages[this.currentTab],
+      params: {
+        imgUrl: item.url
+      }
+    })
+  }
+}
+</script>
+
+<style>
+.collection-page {
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  background-color: #1a2b33; /* Dark background similar to screenshot */
+}
+
+.bg-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.header {
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  height: 50px;
+}
+
+.back-btn {
+  width: 30px;
+  height: 30px;
+  justify-content: center;
+  align-items: center;
+  background-color: #ffffff;
+  border-radius: 15px;
+}
+
+.back-icon {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+}
+
+.title {
+  font-size: 13px;
+  color: #ffffff;
+  font-weight: bold;
+}
+
+.placeholder {
+  width: 30px;
+}
+
+.tabs-wrapper {
+  width: 100%;
+  padding: 10px 16px;
+  flex-direction: row;
+}
+
+.tabs-container {
+  flex: 1;
+  flex-direction: row;
+  background-color: #ffffff;
+  border-radius: 25px;
+  padding: 4px;
+}
+
+.tab-item {
+  flex: 1;
+  height: 36px;
+  border-radius: 18px;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+}
+
+.tab-text {
+  font-size: 12px;
+  font-weight: bold;
+  color: #000000;
+  lines: 1;
+  text-overflow: clip;
+}
+
+.content {
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.empty-state {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.empty-img {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+  margin-bottom: 20px;
+}
+
+.empty-text {
+  font-size: 10px;
+  color: #cccccc;
+}
+
+.data-list {
+  width: 100%;
+  height: 100%;
+  padding: 10px;
+}
+
+.grid-row {
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.grid-item {
+  width: 48%;
+  height: 120px;
+  border-radius: 10px;
+  background-color: #333333;
+  overflow: hidden;
+}
+
+.grid-item-wallpaper {
+  height: 150px;
+}
+
+.grid-placeholder {
+  width: 48%;
+}
+
+.item-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+}
+</style>

@@ -1,0 +1,147 @@
+﻿<template>
+  <div class="page-container">
+    <!-- Header -->
+    <div class="header">
+      <div class="back-btn" onclick="goBack">
+        <image class="back-icon" src="/pkg_main/assets/img/back.png"></image>
+      </div>
+      <text class="title">{{pageTitle}}</text>
+      <div class="placeholder"></div>
+    </div>
+
+    <!-- Wallpaper Grid -->
+    <list class="list-content">
+      <list-item type="grid" class="grid-row" for="{{wallpaperRows}}">
+        <div class="grid-cell" onclick="openWallpaper($item.left)">
+           <image class="wallpaper-img" src="{{$item.left}}"></image>
+        </div>
+        <!-- Check if right item exists to handle odd number of items -->
+        <div class="grid-cell" if="{{$item.right}}" onclick="openWallpaper($item.right)">
+           <image class="wallpaper-img" src="{{$item.right}}"></image>
+        </div>
+        <div class="grid-cell-empty" if="{{!$item.right}}"></div>
+      </list-item>
+    </list>
+  </div>
+</template>
+
+<script>
+import router from '@system.router'
+
+export default {
+  data: {
+    pageTitle: '壁纸列表',
+    type: 'latest',
+    wallpaperRows: []
+  },
+  onInit() {
+    if (this.pageTitle) {
+      this.pageTitle = this.pageTitle;
+    }
+    if (this.type) {
+      this.type = this.type;
+    }
+    this.loadData();
+  },
+  loadData() {
+    const baseUrl = 'https://cdn.shijinzhuang.com/fytk/bz/';
+    let folder = this.type === 'popular' ? 'rm' : 'zx';
+    
+    const rows = [];
+    // Generating some mock data
+    for (let i = 1; i <= 20; i += 2) {
+      rows.push({
+        left: `${baseUrl}${folder}/${i}.jpg`,
+        right: `${baseUrl}${folder}/${i + 1}.jpg`
+      });
+    }
+    this.wallpaperRows = rows;
+  },
+  goBack() {
+    router.back();
+  },
+  openWallpaper(url) {
+    router.push({
+      uri: '/pkg_main/pages/WallpaperDetail',
+      params: {
+        imgUrl: url
+      }
+    })
+  }
+}
+</script>
+
+<style>
+.page-container {
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  background-color: #121212;
+}
+
+.header {
+  height: 80px;
+  padding-top: 20px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding-left: 16px;
+  padding-right: 16px;
+  background: linear-gradient(to bottom, #66cc33, #121212); 
+}
+
+.back-btn {
+  width: 26px;
+  height: 26px;
+  justify-content: center;
+  align-items: center;
+  background-color: #ffffff;
+  border-radius: 13px;
+}
+
+.back-icon {
+  width: 14px;
+  height: 14px;
+  object-fit: contain;
+}
+
+.title {
+  font-size: 16px;
+  color: #ffffff;
+  font-weight: bold;
+}
+
+.placeholder {
+  width: 26px;
+}
+
+.list-content {
+  flex: 1;
+  padding: 10px;
+}
+
+.grid-row {
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.grid-cell {
+  width: 48%;
+  height: 180px;
+  border-radius: 10px;
+  background-color: #333333;
+  overflow: hidden;
+}
+
+.grid-cell-empty {
+  width: 48%;
+}
+
+.wallpaper-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+}
+</style>

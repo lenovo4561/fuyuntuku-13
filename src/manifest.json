@@ -26,6 +26,15 @@
     },
     {
       "name": "system.app"
+    },
+    {
+      "name": "system.request"
+    },
+    {
+      "name": "system.media"
+    },
+    {
+      "name": "system.device"
     }
   ],
   "permissions": [
@@ -44,35 +53,56 @@
       "pages/Splash": {
         "component": "index"
       },
-      "pages/Home": {
+      "pkg_main/pages/Home": {
         "component": "index"
       },
-      "pages/Wallpaper": {
+      "pkg_main/pages/Demo": {
         "component": "index"
       },
-      "pages/Avatar": {
+      "pkg_main/pages/DemoDetail": {
         "component": "index"
       },
-      "pages/AvatarDetail": {
+      "pkg_main/pages/Web": {
         "component": "index"
       },
-      "pages/Emoji": {
+      "pkg_main/pages/EmojiDetail": {
         "component": "index"
       },
-      "pages/Mine": {
+      "pkg_main/pages/Wallpaper": {
         "component": "index"
       },
-      "pages/Demo": {
+      "pkg_main/pages/WallpaperDetail": {
         "component": "index"
       },
-      "pages/DemoDetail": {
+      "pkg_main/pages/WallpaperList": {
         "component": "index"
       },
-      "pages/Web": {
+      "pkg_main/pages/Avatar": {
+        "component": "index"
+      },
+      "pkg_main/pages/AvatarDetail": {
+        "component": "index"
+      },
+      "pkg_main/pages/AvatarList": {
+        "component": "index"
+      },
+      "pkg_main/pages/Collection": {
+        "component": "index"
+      },
+      "pkg_main/pages/Emoji": {
+        "component": "index"
+      },
+      "pkg_main/pages/Mine": {
         "component": "index"
       }
     }
   },
+  "subpackages": [
+    {
+      "name": "pkg_main",
+      "resource": "pkg_main"
+    }
+  ],
   "display": {
     "titleBarBackgroundColor": "#f2f2f2",
     "titleBarTextColor": "#414141",
@@ -81,17 +111,35 @@
       "pages/Splash": {
         "titleBar": false
       },
-      "pages/Home": {
+      "pkg_main/pages/Home": {
         "titleBar": false
       },
-      "pages/Demo": {
+      "pkg_main/pages/EmojiDetail": {
+        "titleBar": false
+      },
+      "pkg_main/pages/Collection": {
+        "titleBar": false
+      },
+      "pkg_main/pages/WallpaperDetail": {
+        "titleBar": false
+      },
+      "pkg_main/pages/WallpaperList": {
+        "titleBar": false
+      },
+      "pkg_main/pages/AvatarList": {
+        "titleBar": false
+      },
+      "pkg_main/pages/AvatarDetail": {
+        "titleBar": false
+      },
+      "pkg_main/pages/Demo": {
         "titleBarText": "快应用示例模版",
         "menu": false
       },
-      "pages/DemoDetail": {
+      "pkg_main/pages/DemoDetail": {
         "titleBarText": "详情页"
       },
-      "pages/Web": {
+      "pkg_main/pages/Web": {
         "titleBarText": "协议"
       }
     }

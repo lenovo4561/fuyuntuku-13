@@ -48,7 +48,7 @@ export default {
   },
   openAgreement() {
     router.push({
-      uri: '/pages/Web',
+      uri: '/pkg_main/pages/Web',
       params: {
         url: 'https://api.51dsp.cn/index/agreement.do?pn=com.fuyuntukucl.fortunefytk',
         title: '用户协议'
@@ -57,7 +57,7 @@ export default {
   },
   openPrivacy() {
     router.push({
-      uri: '/pages/Web',
+      uri: '/pkg_main/pages/Web',
       params: {
         url: 'https://api.51dsp.cn/index/privacy.do?pn=com.fuyuntukucl.fortunefytk',
         title: '隐私政策'

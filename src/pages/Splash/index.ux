@@ -52,7 +52,7 @@ export default {
   },
   goHome() {
     router.replace({
-      uri: '/pages/Home'
+      uri: '/pkg_main/pages/Home'
     })
   }
 }

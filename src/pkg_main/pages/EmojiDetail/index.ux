@@ -1,0 +1,255 @@
+﻿<template>
+  <div class="page-container">
+    <stack class="stack-container">
+      <!-- Blurred Background -->
+      <image class="bg-image" src="{{imgUrl}}"></image>
+      <div class="bg-mask"></div>
+
+      <!-- Main Content -->
+      <div class="content-container">
+         <!-- Centered Image -->
+         <image class="main-image" src="{{imgUrl}}"></image>
+      </div>
+
+      <!-- Header -->
+      <div class="header">
+        <div class="back-btn" onclick="goBack">
+          <image class="back-icon" src="/pkg_main/assets/img/back.png"></image>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="footer">
+        <div class="download-btn" onclick="downloadImage">
+          <text class="download-text">下载图片</text>
+        </div>
+        <div class="like-btn" onclick="toggleLike">
+          <image class="like-icon" src="{{isLiked ? '/pkg_main/assets/img/shoucang-s.png' : '/pkg_main/assets/img/shoucang-u.png'}}"></image>
+        </div>
+      </div>
+    </stack>
+  </div>
+</template>
+
+<script>
+import router from '@system.router'
+import prompt from '@system.prompt'
+import storage from '@system.storage'
+import request from '@system.request'
+import media from '@system.media'
+
+export default {
+  protected: {
+    imgUrl: '',
+    isLiked: false
+  },
+  onInit() {
+    this.checkLikeStatus()
+  },
+  checkLikeStatus() {
+    storage.get({
+      key: 'collection_emoji',
+      success: (data) => {
+        const list = JSON.parse(data || '[]')
+        this.isLiked = list.some(item => item.url === this.imgUrl)
+      }
+    })
+  },
+  goBack() {
+    router.back()
+  },
+  downloadImage() {
+    if (!this.imgUrl) {
+      prompt.showToast({ message: '图片地址无效' })
+      return
+    }
+    
+    prompt.showToast({ message: '开始下载...' })
+    
+    // URL编码处理空格
+    const encodedUrl = this.imgUrl.replace(/\s/g, '%20')
+    
+    request.download({
+      url: encodedUrl,
+      success: (data) => {
+        console.log('下载成功, token:', data.token)
+        request.onDownloadComplete({
+          token: data.token,
+          success: (ret) => {
+            console.log('下载完成, path:', ret.uri)
+            media.saveToPhotosAlbum({
+              uri: ret.uri,
+              success: () => {
+                prompt.showToast({ message: '下载成功' })
+              },
+              fail: (data, code) => {
+                console.error('保存到相册失败:', data, code)
+                prompt.showToast({ message: '保存失败，请检查权限' })
+              }
+            })
+          },
+          fail: (data, code) => {
+            console.error('下载完成检查失败:', data, code)
+            prompt.showToast({ message: '下载失败' })
+          }
+        })
+      },
+      fail: (data, code) => {
+        console.error('下载请求失败:', data, code)
+        prompt.showToast({ message: '下载请求失败: ' + code })
+      }
+    })
+  },
+  toggleLike() {
+    storage.get({
+      key: 'collection_emoji',
+      success: (data) => {
+        let list = JSON.parse(data || '[]')
+        const index = list.findIndex(item => item.url === this.imgUrl)
+        
+        if (index > -1) {
+          // 取消收藏
+          list.splice(index, 1)
+          this.isLiked = false
+          prompt.showToast({ message: '取消收藏' })
+        } else {
+          // 添加收藏
+          list.push({
+            url: this.imgUrl,
+            type: 'emoji',
+            timestamp: Date.now()
+          })
+          this.isLiked = true
+          prompt.showToast({ message: '已收藏' })
+        }
+        
+        storage.set({
+          key: 'collection_emoji',
+          value: JSON.stringify(list)
+        })
+      },
+      fail: () => {
+        // 首次收藏
+        const list = [{
+          url: this.imgUrl,
+          type: 'emoji',
+          timestamp: Date.now()
+        }]
+        storage.set({
+          key: 'collection_emoji',
+          value: JSON.stringify(list)
+        })
+        this.isLiked = true
+        prompt.showToast({ message: '已收藏' })
+      }
+    })
+  }
+}
+</script>
+
+<style>
+  .page-container {
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    background-color: #000000;
+  }
+  
+  .stack-container {
+    width: 100%;
+    height: 100%;
+  }
+
+  .bg-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: blur(20px);
+    opacity: 0.6;
+  }
+  
+  .bg-mask {
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+  }
+
+  .content-container {
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .main-image {
+    width: 100%;
+    object-fit: contain;
+  }
+
+  .header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 80px;
+    padding-top: 30px;
+    padding-left: 20px;
+  }
+
+  .back-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 18px;
+    background-color: #ffffff;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .back-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100px;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    padding-bottom: 20px;
+  }
+
+  .download-btn {
+    flex: 1;
+    height: 50px;
+    background-color: #66ff00; 
+    border-radius: 25px;
+    justify-content: center;
+    align-items: center;
+    margin-right: 20px;
+  }
+
+  .download-text {
+    color: #000000;
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  .like-btn {
+    width: 50px;
+    height: 50px;
+    border-radius: 25px;
+    background-color: rgba(255, 255, 255, 0.2);
+    justify-content: center;
+    align-items: center;
+  }
+
+  .like-icon {
+    width: 24px;
+    height: 24px;
+  }
+</style>
